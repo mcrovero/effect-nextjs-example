@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mcrovero/effect-nextjs": "file:../effect-nextjs/dist",
+    "@mcrovero/effect-react-cache": "^0.2.0",
     "effect": "^3.17.7",
     "next": "15.4.6",
     "react": "19.1.0",

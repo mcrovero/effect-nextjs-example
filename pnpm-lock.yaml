@@ -11,6 +11,9 @@ importers:
       '@mcrovero/effect-nextjs':
         specifier: file:../effect-nextjs/dist
         version: file:../effect-nextjs/dist
+      '@mcrovero/effect-react-cache':
+        specifier: ^0.2.0
+        version: 0.2.0
       effect:
         specifier: ^3.17.7
         version: 3.17.7
@@ -197,6 +200,9 @@ packages:
 
   '@mcrovero/effect-nextjs@file:../effect-nextjs/dist':
     resolution: {directory: ../effect-nextjs/dist, type: directory}
+
+  '@mcrovero/effect-react-cache@0.2.0':
+    resolution: {integrity: sha512-RUQB2MnN+UNprMCCB+71zOr1iUkb6MgmXpaCeQnfl1tfGMJi+LPkUcb9dVMlb0k1qmN+DrVeng9phcv3XlPy9w==}
 
   '@next/env@15.4.6':
     resolution: {integrity: sha512-yHDKVTcHrZy/8TWhj0B23ylKv5ypocuCwey9ZqPyv4rPdUdRzpGCkSi03t04KBPyU96kxVtUqx6O3nE1kpxASQ==}
@@ -716,6 +722,11 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
   '@mcrovero/effect-nextjs@file:../effect-nextjs/dist':
+    dependencies:
+      effect: 3.17.7
+      react: 19.1.1
+
+  '@mcrovero/effect-react-cache@0.2.0':
     dependencies:
       effect: 3.17.7
       react: 19.1.1

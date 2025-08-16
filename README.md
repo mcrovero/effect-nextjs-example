@@ -1,132 +1,63 @@
-# @mcrovero/effect-nextjs Example
+## Effect + Next.js Example
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) that demonstrates the usage of the [`@mcrovero/effect-nextjs`](https://www.npmjs.com/package/@mcrovero/effect-nextjs) library.
+This example shows a minimal, practical integration of Effect with the Next.js App Router. It demonstrates typed pages, middlewares, server actions, and a simple React-side cache.
 
-## About @mcrovero/effect-nextjs
+### Libraries
+- **@mcrovero/effect-nextjs**: typed helpers for pages, layouts, middlewares, and actions — [GitHub](https://github.com/mcrovero/effect-nextjs)
+- **@mcrovero/effect-react-cache**: tiny utility to cache Effect programs across React executions — [GitHub](https://github.com/mcrovero/effect-react-cache)
 
-`@mcrovero/effect-nextjs` is a library that provides typed helpers to build Next.js App Router pages, layouts, server components, and server actions with [Effect](https://effect.website/). It allows you to:
-
-- Compose middlewares as Context.Tags
-- Validate params/search params/input with Schema
-- Build your Effect programs with a single call
-- Handle errors in a type-safe way
-
-⚠️ **Warning**: This library is in early alpha and is not ready for production use.
-
-## Features Demonstrated
-
-This example project showcases:
-
-- **Typed Page Handlers**: Pages with validated params and search params
-- **Server Actions**: Type-safe server actions with input validation
-- **Client Components**: Integration with client-side components
-- **Middleware System**: Authentication and other middleware patterns
-- **Schema Validation**: Using Effect Schema for runtime validation
-- **Error Handling**: Proper error boundaries and handling
-
-## Getting Started
+## Getting started
 
 ### Prerequisites
+- Node.js 18+
+- pnpm (recommended)
 
-- Node.js 18+ 
-- pnpm (recommended) or npm
-
-### Installation
-
-1. Clone this repository:
-```bash
-git clone <repository-url>
-cd my-app
-```
-
-2. Install dependencies:
+### Install
 ```bash
 pnpm install
-# or
-npm install
 ```
 
-3. Run the development server:
+### Develop
 ```bash
 pnpm dev
-# or
-npm run dev
+```
+Open `http://localhost:3000`.
+
+### Build & run
+```bash
+pnpm build
+pnpm start
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Project Structure
-
-```
-my-app/
-├── app/                    # Next.js App Router
-│   ├── action.tsx         # Server action example
-│   ├── client-component.tsx # Client component integration
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page with Effect integration
-├── lib/
-│   └── base.ts           # Effect setup, middlewares, and services
-└── package.json
+### Lint (optional)
+```bash
+pnpm lint
 ```
 
-## Key Files
+## How to “test” the example
+This repo is a runnable demo rather than a unit-tested project. To validate behavior:
 
-- **`lib/base.ts`**: Contains the core Effect setup, including services, middlewares, and the main Effect runtime configuration
-- **`app/page.tsx`**: Demonstrates a typed page handler with middleware and schema validation
-- **`app/action.tsx`**: Shows server action implementation with input validation
-- **`app/client-component.tsx`**: Example of integrating Effect-powered server components with client components
+- **See middleware-provided user**: Header shows the current user, provided by a middleware (`CurrentUser`). The server logs “Getting user” once per request; check your terminal.
+- **Search param typing**: In the "Current User" card, set `id` and click "Apply". The value is validated/typed via `Schema` in `BasePage`.
+- **Client → Server action**: Click "Run server action". You’ll see an alert with the action result, typed end-to-end.
+- **Caching**: The user fetch is wrapped with `reactCache`, so the Effect runs once per request (page/layout) and is reused.
 
-## Core Concepts
+## File tour
+- `lib/auth-middleware.ts`: defines `CurrentUser` and a middleware that provides it using an Effect cached with `reactCache`.
+- `lib/base.ts`: centralizes `Next.make(...)`, base builders, and schemas.
+- `app/layout.tsx`: root layout using `BaseLayout` and showing the user in the header.
+- `app/page.tsx`: page built with `BasePage`, typed `searchParams`, and simple UI.
+- `app/action.tsx`: server action built with `BaseAction`.
+- `app/client-component.tsx`: client-side button calling the server action.
 
-### Services and Context
+## Philosophy: Effect × Next.js
+Effect works with Next.js, but Next.js introduces a lot of “magic”: server components, request lifecycles, streaming, heterogeneous runtimes, and implicit boundaries between client/server. These abstractions are powerful, yet they can make it harder to express explicit, typed, and testable Effect programs without accidental coupling or double execution.
 
-The library uses Effect's Context system to provide services to your handlers:
+These libraries are one pragmatic approach to bridge the two ecosystems:
 
-```typescript
-// Define a service
-export class CurrentUser extends Context.Tag("CurrentUser")<
-  CurrentUser, 
-  { id: string; name: string }
->() {}
-```
+- **Make effects explicit**: model data dependencies as `Context.Tag`s and provide them via typed middlewares.
+- **Constrain surface areas**: pages, layouts, and actions are built through small, typed builders that attach schemas, middlewares, and error types in one place.
+- **Respect Next.js semantics**: embrace server components and the app router while keeping Effect programs predictable and request-scoped.
+- **Reuse where safe**: use `@mcrovero/effect-react-cache` to memoize Effects across React executions in a request, avoiding redundant work while staying correct.
 
-### Middlewares
-
-Middlewares are defined as Context.Tags and can provide services or handle cross-cutting concerns:
-
-```typescript
-export class AuthMiddleware extends NextMiddleware.Tag<AuthMiddleware>()(
-  "AuthMiddleware", 
-  {
-    provides: CurrentUser,
-    failure: Schema.String
-  }
-) {}
-```
-
-### Schema Validation
-
-Use Effect Schema to validate and transform inputs:
-
-```typescript
-const page = Next.make(AppLive)
-  .page("HomePage")
-  .setParamsSchema(Schema.Struct({ id: Schema.String }))
-  .setSearchParamsSchema(Schema.Struct({ q: Schema.optional(Schema.String) }))
-  .build(({ params, searchParams }) => {
-    // params and searchParams are fully typed and validated
-    return Effect.succeed(<div>Hello World</div>)
-  })
-```
-
-## Learn More
-
-To learn more about the technologies used in this example:
-
-- [Effect Documentation](https://effect.website/) - Learn about Effect, the functional programming library
-- [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
-- [@mcrovero/effect-nextjs](https://www.npmjs.com/package/@mcrovero/effect-nextjs) - The main library documentation
-
-## License
-
-This example is provided under the MIT License.
+This is not the only way to integrate Effect with Next.js, but it aims to be an elegant, learnable baseline: small, typed building blocks that remove incidental complexity and let Effect and Next.js play nicely together.

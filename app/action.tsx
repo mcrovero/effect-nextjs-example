@@ -1,6 +1,7 @@
 "use server";
 
-import { BaseAction, CurrentUser } from "@/lib/base";
+import { BaseAction } from "@/lib/base";
+import { CurrentUser } from "@/lib/auth-middleware";
 import { Effect } from "effect";
 
 export const testAction = BaseAction.build(async () =>
