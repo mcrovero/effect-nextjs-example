@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@mcrovero/effect-nextjs':
-        specifier: ^0.1.4
-        version: 0.1.4
+        specifier: ^0.4.1
+        version: 0.4.1(effect@3.17.7)
       '@mcrovero/effect-react-cache':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.2.2
+        version: 0.2.2(effect@3.17.7)(react@19.1.0)
       effect:
         specifier: ^3.17.7
         version: 3.17.7
@@ -198,11 +198,16 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@mcrovero/effect-nextjs@0.1.4':
-    resolution: {integrity: sha512-FaMFoc0yic8OeMvLs37rRgYFkpGWcrul8mp5/UM5tEyJ+JI1Wtr9bMwRFjBhGM345toGow7su4gq64cZVBkowA==}
+  '@mcrovero/effect-nextjs@0.4.1':
+    resolution: {integrity: sha512-HgYTc+sd/Mk8CMkLJgp7Cho6f/VgFg+/QXUjT9GyVOqxKJFm6sczZ/xPD9SXKfQq9L8e04Svra6lO4cJiUA7Sg==}
+    peerDependencies:
+      effect: ^3.0.0
 
-  '@mcrovero/effect-react-cache@0.2.0':
-    resolution: {integrity: sha512-RUQB2MnN+UNprMCCB+71zOr1iUkb6MgmXpaCeQnfl1tfGMJi+LPkUcb9dVMlb0k1qmN+DrVeng9phcv3XlPy9w==}
+  '@mcrovero/effect-react-cache@0.2.2':
+    resolution: {integrity: sha512-UYUB3Zw6OuI9u5kERmsachBPe2CxpRxjLw0c1Pjc9zC+LUJXxqY75+jksQR0waOQ+IYw34kKzjYi4XUwgWCOOQ==}
+    peerDependencies:
+      effect: ^3.0.0
+      react: ^19.0.0
 
   '@next/env@15.4.6':
     resolution: {integrity: sha512-yHDKVTcHrZy/8TWhj0B23ylKv5ypocuCwey9ZqPyv4rPdUdRzpGCkSi03t04KBPyU96kxVtUqx6O3nE1kpxASQ==}
@@ -541,10 +546,6 @@ packages:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
     engines: {node: '>=0.10.0'}
 
-  react@19.1.1:
-    resolution: {integrity: sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==}
-    engines: {node: '>=0.10.0'}
-
   scheduler@0.26.0:
     resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
 
@@ -721,14 +722,14 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@mcrovero/effect-nextjs@0.1.4':
+  '@mcrovero/effect-nextjs@0.4.1(effect@3.17.7)':
     dependencies:
       effect: 3.17.7
 
-  '@mcrovero/effect-react-cache@0.2.0':
+  '@mcrovero/effect-react-cache@0.2.2(effect@3.17.7)(react@19.1.0)':
     dependencies:
       effect: 3.17.7
-      react: 19.1.1
+      react: 19.1.0
 
   '@next/env@15.4.6': {}
 
@@ -1001,8 +1002,6 @@ snapshots:
       scheduler: 0.26.0
 
   react@19.1.0: {}
-
-  react@19.1.1: {}
 
   scheduler@0.26.0: {}
 

@@ -1,6 +1,6 @@
 import { NextMiddleware } from "@mcrovero/effect-nextjs";
-import { reactCache } from "@mcrovero/effect-react-cache";
-import { Layer, Schema } from "effect";
+import { reactCache } from "@mcrovero/effect-react-cache/ReactCache";
+import { Schema } from "effect";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 
@@ -26,7 +26,7 @@ const getUser = Effect.gen(function* () {
 
 const cachedGetUser = reactCache(() => getUser);
 
-export const ProvideUserMiddlewareLive = Layer.succeed(
+export const ProvideUserMiddlewareLive = NextMiddleware.layer(
   ProvideUserMiddleware,
-  ProvideUserMiddleware.of(() => cachedGetUser())
+  () => cachedGetUser()
 );
