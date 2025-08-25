@@ -3,7 +3,6 @@ import { reactCache } from "@mcrovero/effect-react-cache/ReactCache";
 import { Schema } from "effect";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
-import { testEffect } from "./effects";
 
 export class CurrentUser extends Context.Tag("CurrentUser")<
   CurrentUser,
