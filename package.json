@@ -9,10 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@mcrovero/effect-nextjs": "^0.4.1",
-    "@mcrovero/effect-react-cache": "^0.2.2",
+    "@effect/opentelemetry": "^0.56.4",
+    "@mcrovero/effect-nextjs": "file:/Users/mattiacrovero/Desktop/personal/effect/effect-nextjs/dist",
+    "@mcrovero/effect-react-cache": "^0.2.3",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/resources": "^2.0.1",
+    "@opentelemetry/sdk-logs": "^0.203.0",
+    "@opentelemetry/sdk-metrics": "^2.0.1",
+    "@opentelemetry/sdk-trace-base": "^2.0.1",
+    "@opentelemetry/sdk-trace-node": "^2.0.1",
+    "@vercel/otel": "^1.13.0",
     "effect": "^3.17.7",
-    "next": "15.4.6",
+    "next": "15.5.0",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
