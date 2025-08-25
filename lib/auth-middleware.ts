@@ -3,6 +3,7 @@ import { reactCache } from "@mcrovero/effect-react-cache/ReactCache";
 import { Schema } from "effect";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
+import { testEffect } from "./effects";
 
 export class CurrentUser extends Context.Tag("CurrentUser")<
   CurrentUser,
@@ -18,15 +19,17 @@ export class ProvideUserMiddleware extends NextMiddleware.Tag<ProvideUserMiddlew
  * The getUser function is a function that gets the user from the database.
  * It is cached using the reactCache function and will be called only once in the request (Page/Layout)
  */
-const getUser = Effect.gen(function* () {
+const getUser = Effect.fn("GetUser")(function* () {
   yield* Effect.log("Getting user");
-  yield* Effect.sleep(2000);
-  return { id: "u-1", name: "Alice" };
+  yield* Effect.sleep(100);
+  return { id: "u-1", name: "Alice" } as const;
 });
 
-const cachedGetUser = reactCache(() => getUser);
+const cachedGetUser = reactCache(getUser);
 
 export const ProvideUserMiddlewareLive = NextMiddleware.layer(
   ProvideUserMiddleware,
-  () => cachedGetUser()
+  () => {
+    return cachedGetUser();
+  }
 );
