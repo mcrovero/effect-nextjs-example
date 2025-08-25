@@ -29,26 +29,10 @@ pnpm build
 pnpm start
 ```
 
-### Lint (optional)
-```bash
-pnpm lint
-```
-
-## How to “test” the example
-This repo is a runnable demo rather than a unit-tested project. To validate behavior:
-
-- **See middleware-provided user**: Header shows the current user, provided by a middleware (`CurrentUser`). The server logs “Getting user” once per request; check your terminal.
-- **Search param typing**: In the "Current User" card, set `id` and click "Apply". The value is validated/typed via `Schema` in `BasePage`.
-- **Client → Server action**: Click "Run server action". You’ll see an alert with the action result, typed end-to-end.
-- **Caching**: The user fetch is wrapped with `reactCache`, so the Effect runs once per request (page/layout) and is reused.
-
 ## File tour
 - `lib/auth-middleware.ts`: defines `CurrentUser` and a middleware that provides it using an Effect cached with `reactCache`.
 - `lib/base.ts`: centralizes `Next.make(...)`, base builders, and schemas.
-- `app/layout.tsx`: root layout using `BaseLayout` and showing the user in the header.
-- `app/page.tsx`: page built with `BasePage`, typed `searchParams`, and simple UI.
-- `app/action.tsx`: server action built with `BaseAction`.
-- `app/client-component.tsx`: client-side button calling the server action.
+- `lib/tracer.ts`: OpenTelemetry effect tracer for tracing.
 
 ## Philosophy: Effect × Next.js
 Effect works with Next.js, but Next.js introduces a lot of “magic”: server components, request lifecycles, streaming, heterogeneous runtimes, and implicit boundaries between client/server. These abstractions are powerful, yet they can make it harder to express explicit, typed, and testable Effect programs without accidental coupling or double execution.
