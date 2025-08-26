@@ -12,8 +12,8 @@ importers:
         specifier: ^0.56.4
         version: 0.56.4(@effect/platform@0.90.6(effect@3.17.7))(@opentelemetry/api@1.9.0)(@opentelemetry/resources@2.0.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.203.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.0.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.0.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.0.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.36.0)(effect@3.17.7)
       '@mcrovero/effect-nextjs':
-        specifier: ^0.5.0
-        version: 0.5.0(effect@3.17.7)
+        specifier: ^0.6.0
+        version: 0.6.0(effect@3.17.7)
       '@mcrovero/effect-react-cache':
         specifier: ^0.2.3
         version: 0.2.3(effect@3.17.7)(react@19.1.0)
@@ -256,8 +256,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@mcrovero/effect-nextjs@0.5.0':
-    resolution: {integrity: sha512-I1n+Qd6fntMoYGI8pUqG+zyWnoGAa5dMARWFK9DOz6Ek9AxZNW6GR3Y6lHwV0b/CM7h0+nbVo1eF4FWGCecKLQ==}
+  '@mcrovero/effect-nextjs@0.6.0':
+    resolution: {integrity: sha512-f9OaOMvkaVkpM4Ews5pftTtY0Rqla5XG0MSJeVFbFiCJtmPBCto0XGhruTHOuRzEuluBK+6pT6aqPT3I/IcJ8A==}
     peerDependencies:
       effect: ^3.0.0
 
@@ -987,7 +987,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@mcrovero/effect-nextjs@0.5.0(effect@3.17.7)':
+  '@mcrovero/effect-nextjs@0.6.0(effect@3.17.7)':
     dependencies:
       effect: 3.17.7
 
