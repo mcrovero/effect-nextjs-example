@@ -1,6 +1,9 @@
 import { Tracer as OtelTracer, Resource } from "@effect/opentelemetry";
 import { Next } from "@mcrovero/effect-nextjs";
-import { ProvideUserMiddleware, ProvideUserMiddlewareLive } from "./auth-middleware";
+import {
+  ProvideUserMiddleware,
+  ProvideUserMiddlewareLive,
+} from "./auth-middleware";
 import { TodoStoreLive } from "./todo-store";
 
 import { Layer, Schema } from "effect";
@@ -13,9 +16,8 @@ const tracerWithOtel = layerTracer.pipe(
     )
   )
 );
-
 const allLayers = Layer.mergeAll(ProvideUserMiddlewareLive, TodoStoreLive);
-const allLayersWithTracer = Layer.mergeAll(allLayers, tracerWithOtel);
+const allLayersWithTracer = allLayers.pipe(Layer.provideMerge(tracerWithOtel));
 
 const NextBase = Next.make(allLayersWithTracer);
 
