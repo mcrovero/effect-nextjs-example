@@ -2,13 +2,13 @@
 
 import { CurrentUser } from "@/lib/auth-middleware";
 import { BaseAction } from "@/lib/base";
-import * as Store from "@/lib/todo-store";
+import { TodoStore } from "@/lib/todo-store";
 import { Effect, Schema } from "effect";
 
 export const getTodos = BaseAction.build(async () =>
   Effect.gen(function* () {
     yield* CurrentUser;
-    const todos = yield* Store.readTodos();
+    const todos = yield* TodoStore.pipe(Effect.flatMap((s) => s.readTodos));
     return { todos, error: null } as const;
   }).pipe(
     Effect.catchAll((err) =>
@@ -23,7 +23,7 @@ export const createTodoAction = BaseAction.setInputSchema(
   Effect.gen(function* () {
     yield* CurrentUser;
     const input = yield* Effect.orDie(request.input);
-    const todos = yield* Store.createTodo(input.title);
+    const todos = yield* TodoStore.pipe(Effect.flatMap((s) => s.createTodo(input.title)));
     return { todos, error: null } as const;
   }).pipe(
     Effect.catchAll((err) =>
@@ -38,7 +38,7 @@ export const toggleTodoAction = BaseAction.setInputSchema(
   Effect.gen(function* () {
     yield* CurrentUser;
     const input = yield* Effect.orDie(request.input);
-    const todos = yield* Store.toggleTodo(input.id);
+    const todos = yield* TodoStore.pipe(Effect.flatMap((s) => s.toggleTodo(input.id)));
     return { todos, error: null } as const;
   }).pipe(
     Effect.catchAll((err) =>
@@ -53,7 +53,7 @@ export const deleteTodoAction = BaseAction.setInputSchema(
   Effect.gen(function* () {
     yield* CurrentUser;
     const input = yield* Effect.orDie(request.input);
-    const todos = yield* Store.deleteTodo(input.id);
+    const todos = yield* TodoStore.pipe(Effect.flatMap((s) => s.deleteTodo(input.id)));
     return { todos, error: null } as const;
   }).pipe(
     Effect.catchAll((err) =>

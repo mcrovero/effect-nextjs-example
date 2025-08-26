@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "@effect/opentelemetry": "^0.56.4",

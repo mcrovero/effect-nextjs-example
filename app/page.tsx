@@ -1,6 +1,6 @@
 import { CurrentUser } from "@/lib/auth-middleware";
 import { BasePage } from "@/lib/base";
-import * as Store from "@/lib/todo-store";
+import { TodoStore } from "@/lib/todo-store";
 import { Effect } from "effect";
 import { ClientComponent } from "./client-component";
 
@@ -8,7 +8,8 @@ export default BasePage.build(() =>
   Effect.gen(function* () {
     const user = yield* CurrentUser;
 
-    return yield* Store.readTodos().pipe(
+    return yield* TodoStore.pipe(
+      Effect.flatMap((s) => s.readTodos),
       Effect.map((todos) => {
         return (
           <div className="space-y-6">

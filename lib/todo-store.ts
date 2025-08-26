@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { Data, Effect } from "effect";
+import { Data, Effect, Context, Layer } from "effect";
 
 export class TodoStoreError extends Data.TaggedError("TodoStoreError")<{
   message: string;
@@ -26,7 +26,7 @@ const ensureStore = Effect.fn("ensureStore")(function* () {
   );
 });
 
-export const readTodos = Effect.fn("readTodos")(function* () {
+const readTodosImpl = Effect.fn("readTodos")(function* () {
   yield* ensureStore();
   const content = yield* Effect.promise(() => fs.readFile(FILE_PATH, "utf8"));
 
@@ -51,8 +51,8 @@ const writeTodos = Effect.fn("writeTodos")(function* (todos: Todo[]) {
   yield* Effect.promise(() => fs.writeFile(FILE_PATH, serialized, "utf8"));
 });
 
-export const createTodo = Effect.fn("createTodo")(function* (title: string) {
-  const todos = yield* readTodos();
+const createTodoImpl = Effect.fn("createTodo")(function* (title: string) {
+  const todos = yield* readTodosImpl();
   const newTodo: Todo = {
     id:
       typeof crypto !== "undefined" && "randomUUID" in crypto
@@ -67,8 +67,8 @@ export const createTodo = Effect.fn("createTodo")(function* (title: string) {
   return next as Todo[];
 });
 
-export const toggleTodo = Effect.fn("toggleTodo")(function* (id: string) {
-  const todos = yield* readTodos();
+const toggleTodoImpl = Effect.fn("toggleTodo")(function* (id: string) {
+  const todos = yield* readTodosImpl();
   const next = todos.map((t) =>
     t.id === id ? { ...t, completed: !t.completed } : t
   );
@@ -76,9 +76,30 @@ export const toggleTodo = Effect.fn("toggleTodo")(function* (id: string) {
   return next as Todo[];
 });
 
-export const deleteTodo = Effect.fn("deleteTodo")(function* (id: string) {
-  const todos = yield* readTodos();
+const deleteTodoImpl = Effect.fn("deleteTodo")(function* (id: string) {
+  const todos = yield* readTodosImpl();
   const next = todos.filter((t) => t.id !== id);
   yield* writeTodos(next);
   return next as Todo[];
 });
+
+export class TodoStore extends Context.Tag("TodoStore")<
+  TodoStore,
+  {
+    readTodos: Effect.Effect<Todo[], TodoStoreError>;
+    createTodo: (title: string) => Effect.Effect<Todo[], TodoStoreError>;
+    toggleTodo: (id: string) => Effect.Effect<Todo[], TodoStoreError>;
+    deleteTodo: (id: string) => Effect.Effect<Todo[], TodoStoreError>;
+  }
+>() {}
+
+const makeTodoStore = Effect.gen(function* () {
+  return {
+    readTodos: readTodosImpl(),
+    createTodo: (title: string) => createTodoImpl(title),
+    toggleTodo: (id: string) => toggleTodoImpl(id),
+    deleteTodo: (id: string) => deleteTodoImpl(id),
+  } as const;
+});
+
+export const TodoStoreLive = Layer.effect(TodoStore, makeTodoStore);
