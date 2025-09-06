@@ -7,6 +7,10 @@ import {
 import { TodoStoreLive } from "./todo-store";
 
 import { Layer, Logger, LogLevel } from "effect";
+import {
+  LogRequestMiddleware,
+  LogRequestMiddlewareLive,
+} from "./route-middleware";
 import { layerTracer } from "./tracer";
 
 const tracerWithOtel = layerTracer.pipe(
@@ -16,7 +20,11 @@ const tracerWithOtel = layerTracer.pipe(
     )
   )
 );
-const allLayers = Layer.mergeAll(ProvideUserMiddlewareLive, TodoStoreLive);
+const allLayers = Layer.mergeAll(
+  ProvideUserMiddlewareLive,
+  TodoStoreLive,
+  LogRequestMiddlewareLive
+);
 const allLayersWithTracer = allLayers.pipe(
   Layer.provideMerge(tracerWithOtel),
   Layer.provide(Logger.minimumLogLevel(LogLevel.Debug))
@@ -38,3 +46,7 @@ export const BaseAction = NextAction.make(
 export const BaseComponent = Next.make("base", allLayersWithTracer).middleware(
   ProvideUserMiddleware
 );
+
+export const BaseApi = Next.make("base", allLayersWithTracer)
+  .middleware(LogRequestMiddleware)
+  .middleware(ProvideUserMiddleware);
