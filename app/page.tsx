@@ -1,16 +1,26 @@
 import { CurrentUser } from "@/lib/auth-middleware";
 import { BasePage } from "@/lib/base";
 import { TodoStore } from "@/lib/todo-store";
-import { Effect } from "effect";
+import { decodeSearchParams } from "@mcrovero/effect-nextjs/Next";
+import { Effect, Schema } from "effect";
 import { ClientComponent } from "./client-component";
+import { ServerComponent } from "./server-component";
 
-export default BasePage.build(() =>
-  Effect.gen(function* () {
-    const user = yield* CurrentUser;
-
-    return yield* TodoStore.pipe(
-      Effect.flatMap((s) => s.readTodos),
-      Effect.map((todos) => {
+export default BasePage.build(
+  Effect.fn((props: PageProps<"/">) =>
+    Effect.all([
+      CurrentUser,
+      decodeSearchParams(
+        Schema.Struct({ search: Schema.optional(Schema.String) })
+      )(props),
+    ]).pipe(
+      Effect.flatMap(([user, searchParams]) =>
+        TodoStore.pipe(
+          Effect.flatMap((s) => s.searchTodos(searchParams.search)),
+          Effect.map((todos) => [user, todos] as const)
+        )
+      ),
+      Effect.map(([user, todos]) => {
         return (
           <div className="space-y-6">
             <section className="space-y-1">
@@ -37,6 +47,8 @@ export default BasePage.build(() =>
             <div className="rounded-xl border p-5 bg-white/70 dark:bg-neutral-900/40">
               <ClientComponent initial={todos} />
             </div>
+
+            <ServerComponent test="test" />
           </div>
         );
       }),
@@ -44,11 +56,13 @@ export default BasePage.build(() =>
         Effect.succeed(
           <div className="space-y-4">
             <div className="rounded-xl border p-5 bg-white/70 dark:bg-neutral-900/40">
-              <div className="text-sm text-red-600">{String((err as any)?.message ?? "Error fetching todos")}</div>
+              <div className="text-sm text-red-600">
+                {String((err as any)?.message ?? "Error fetching todos")}
+              </div>
             </div>
           </div>
         )
       )
-    );
-  })
+    )
+  )
 );

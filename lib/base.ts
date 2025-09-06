@@ -1,34 +1,40 @@
 import { Tracer as OtelTracer, Resource } from "@effect/opentelemetry";
-import { Next } from "@mcrovero/effect-nextjs";
+import { Next, NextAction } from "@mcrovero/effect-nextjs";
 import {
   ProvideUserMiddleware,
   ProvideUserMiddlewareLive,
 } from "./auth-middleware";
 import { TodoStoreLive } from "./todo-store";
 
-import { Layer, Schema } from "effect";
+import { Layer, Logger, LogLevel } from "effect";
 import { layerTracer } from "./tracer";
 
 const tracerWithOtel = layerTracer.pipe(
   Layer.provide(
     OtelTracer.layerGlobal.pipe(
-      Layer.provide(Resource.layer({ serviceName: "next-app" }))
+      Layer.provide(Resource.layer({ serviceName: "next-app2" }))
     )
   )
 );
 const allLayers = Layer.mergeAll(ProvideUserMiddlewareLive, TodoStoreLive);
-const allLayersWithTracer = allLayers.pipe(Layer.provideMerge(tracerWithOtel));
+const allLayersWithTracer = allLayers.pipe(
+  Layer.provideMerge(tracerWithOtel),
+  Layer.provide(Logger.minimumLogLevel(LogLevel.Debug))
+);
 
-const NextBase = Next.make(allLayersWithTracer);
-
-export const BasePage = NextBase.page("BasePage")
-  .setParamsSchema(Schema.Struct({ id: Schema.String }))
-  .middleware(ProvideUserMiddleware);
-
-export const BaseLayout = NextBase.layout("BaseLayout").middleware(
+export const BasePage = Next.make("base", allLayersWithTracer).middleware(
   ProvideUserMiddleware
 );
 
-export const BaseAction = NextBase.action("BaseAction").middleware(
+export const BaseLayout = Next.make("base", allLayersWithTracer).middleware(
+  ProvideUserMiddleware
+);
+
+export const BaseAction = NextAction.make(
+  "base",
+  allLayersWithTracer
+).middleware(ProvideUserMiddleware);
+
+export const BaseComponent = Next.make("base", allLayersWithTracer).middleware(
   ProvideUserMiddleware
 );

@@ -83,10 +83,22 @@ const deleteTodoImpl = Effect.fn("deleteTodo")(function* (id: string) {
   return next as Todo[];
 });
 
+const searchTodosImpl = Effect.fn("searchTodos")(function* (query?: string) {
+  const todos = yield* readTodosImpl();
+  if (!query || query.trim() === "") {
+    return todos;
+  }
+  const searchTerm = query.toLowerCase().trim();
+  return todos.filter((todo) =>
+    todo.title.toLowerCase().includes(searchTerm)
+  );
+});
+
 export class TodoStore extends Context.Tag("TodoStore")<
   TodoStore,
   {
     readTodos: Effect.Effect<Todo[], TodoStoreError>;
+    searchTodos: (query?: string) => Effect.Effect<Todo[], TodoStoreError>;
     createTodo: (title: string) => Effect.Effect<Todo[], TodoStoreError>;
     toggleTodo: (id: string) => Effect.Effect<Todo[], TodoStoreError>;
     deleteTodo: (id: string) => Effect.Effect<Todo[], TodoStoreError>;
@@ -96,6 +108,7 @@ export class TodoStore extends Context.Tag("TodoStore")<
 const makeTodoStore = Effect.gen(function* () {
   return {
     readTodos: readTodosImpl(),
+    searchTodos: (query?: string) => searchTodosImpl(query),
     createTodo: (title: string) => createTodoImpl(title),
     toggleTodo: (id: string) => toggleTodoImpl(id),
     deleteTodo: (id: string) => deleteTodoImpl(id),

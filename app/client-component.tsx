@@ -1,19 +1,24 @@
 "use client";
 
 import type { Todo } from "@/lib/todo-store";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import {
   createTodoAction,
   deleteTodoAction,
-  getTodos,
+  getTodosAction,
+  searchTodosAction,
   toggleTodoAction,
-} from "./action";
+} from "./actions";
 
 export const ClientComponent = ({ initial }: { initial: Todo[] }) => {
   const [todos, setTodos] = useState<Todo[]>(initial);
   const [title, setTitle] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+
+  const searchParams = useSearchParams();
 
   const showError = (message: string) => {
     setError(message);
@@ -21,7 +26,7 @@ export const ClientComponent = ({ initial }: { initial: Todo[] }) => {
 
   useEffect(() => {
     // Keep fresh client-side on mount
-    getTodos({}).then((r) => {
+    getTodosAction().then((r) => {
       if (r.error) {
         showError(r.error);
       } else {
@@ -29,6 +34,12 @@ export const ClientComponent = ({ initial }: { initial: Todo[] }) => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    // Initialize search from URL
+    const searchParam = searchParams.get("search") || "";
+    setSearchQuery(searchParam);
+  }, [searchParams]);
 
   const add = () => {
     if (!title.trim()) return;
@@ -39,7 +50,7 @@ export const ClientComponent = ({ initial }: { initial: Todo[] }) => {
       } else {
         setTodos([...r.todos]);
       }
-      setTitle("");  
+      setTitle("");
     });
   };
 
@@ -65,6 +76,29 @@ export const ClientComponent = ({ initial }: { initial: Todo[] }) => {
     });
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // Update URL
+    const params = new URLSearchParams(searchParams.toString());
+    if (query.trim()) {
+      params.set("search", query.trim());
+    } else {
+      params.delete("search");
+    }
+    const newUrl = params.toString() ? `?${params.toString()}` : "/";
+    window.history.replaceState(null, "", newUrl);
+
+    // Search todos
+    startTransition(async () => {
+      const r = await searchTodosAction({ query: query.trim() || undefined });
+      if (r.error) {
+        showError(r.error);
+      } else {
+        setTodos([...r.todos]);
+      }
+    });
+  };
+
   return (
     <div className="space-y-4">
       {error && (
@@ -78,6 +112,14 @@ export const ClientComponent = ({ initial }: { initial: Todo[] }) => {
           </button>
         </div>
       )}
+      <div className="flex gap-2">
+        <input
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)}
+          placeholder="Search todos..."
+          className="flex-1 rounded-md border px-3 py-2 bg-transparent"
+        />
+      </div>
       <div className="flex gap-2">
         <input
           value={title}
