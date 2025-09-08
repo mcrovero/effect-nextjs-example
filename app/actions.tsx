@@ -4,22 +4,22 @@ import { BaseAction } from "@/lib/base";
 import { TodoStore } from "@/lib/todo-store";
 import { Effect } from "effect";
 
-export const getTodosAction = async () =>
-  BaseAction.run(
-    TodoStore.pipe(
-      Effect.flatMap((s) => s.searchTodos()),
-      Effect.map((todos) => ({ todos, error: null } as const)),
-      Effect.catchAll((err) =>
-        Effect.succeed({
-          todos: [],
-          error: String((err as any)?.message ?? "Error reading todos"),
-        } as const)
-      )
+const _getTodosAction = Effect.fn("getTodosAction")(() =>
+  TodoStore.pipe(
+    Effect.flatMap((s) => s.searchTodos()),
+    Effect.map((todos) => ({ todos, error: null } as const)),
+    Effect.catchAll((err) =>
+      Effect.succeed({
+        todos: [],
+        error: String((err as any)?.message ?? "Error reading todos"),
+      } as const)
     )
-  );
+  )
+);
+export const getTodosAction = async () => BaseAction.build(_getTodosAction)();
 
-export const searchTodosAction = async ({ query }: { query?: string }) =>
-  BaseAction.run(
+const _searchTodosAction = Effect.fn("searchTodosAction")(
+  ({ query }: { query?: string }) =>
     TodoStore.pipe(
       Effect.flatMap((s) => s.searchTodos(query)),
       Effect.map((todos) => ({ todos, error: null } as const)),
@@ -30,10 +30,12 @@ export const searchTodosAction = async ({ query }: { query?: string }) =>
         } as const)
       )
     )
-  );
+);
+export const searchTodosAction = async ({ query }: { query?: string }) =>
+  BaseAction.build(_searchTodosAction)({ query });
 
-export const createTodoAction = async ({ title }: { title: string }) =>
-  BaseAction.run(
+const _createTodoAction = Effect.fn("createTodoAction")(
+  ({ title }: { title: string }) =>
     TodoStore.pipe(
       Effect.flatMap((s) => s.createTodo(title)),
       Effect.map((todos) => ({ todos, error: null } as const)),
@@ -44,10 +46,12 @@ export const createTodoAction = async ({ title }: { title: string }) =>
         } as const)
       )
     )
-  );
+);
+export const createTodoAction = async ({ title }: { title: string }) =>
+  BaseAction.build(_createTodoAction)({ title });
 
-export const toggleTodoAction = async ({ id }: { id: string }) =>
-  BaseAction.run(
+const _toggleTodoAction = Effect.fn("toggleTodoAction")(
+  ({ id }: { id: string }) =>
     TodoStore.pipe(
       Effect.flatMap((s) => s.toggleTodo(id)),
       Effect.map((todos) => ({ todos, error: null } as const)),
@@ -58,10 +62,12 @@ export const toggleTodoAction = async ({ id }: { id: string }) =>
         } as const)
       )
     )
-  );
+);
+export const toggleTodoAction = async ({ id }: { id: string }) =>
+  BaseAction.build(_toggleTodoAction)({ id });
 
-export const deleteTodoAction = async ({ id }: { id: string }) =>
-  BaseAction.run(
+const _deleteTodoAction = Effect.fn("deleteTodoAction")(
+  ({ id }: { id: string }) =>
     TodoStore.pipe(
       Effect.flatMap((s) => s.deleteTodo(id)),
       Effect.map((todos) => ({ todos, error: null } as const)),
@@ -72,4 +78,6 @@ export const deleteTodoAction = async ({ id }: { id: string }) =>
         } as const)
       )
     )
-  );
+);
+export const deleteTodoAction = async ({ id }: { id: string }) =>
+  BaseAction.build(_deleteTodoAction)({ id });

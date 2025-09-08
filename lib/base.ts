@@ -1,5 +1,5 @@
 import { Tracer as OtelTracer, Resource } from "@effect/opentelemetry";
-import { Next, NextAction } from "@mcrovero/effect-nextjs";
+import { Next } from "@mcrovero/effect-nextjs";
 import {
   ProvideUserMiddleware,
   ProvideUserMiddlewareLive,
@@ -38,10 +38,9 @@ export const BaseLayout = Next.make("base", allLayersWithTracer).middleware(
   ProvideUserMiddleware
 );
 
-export const BaseAction = NextAction.make(
-  "base",
-  allLayersWithTracer
-).middleware(ProvideUserMiddleware);
+export const BaseAction = Next.make("base", allLayersWithTracer).middleware(
+  ProvideUserMiddleware
+);
 
 export const BaseComponent = Next.make("base", allLayersWithTracer).middleware(
   ProvideUserMiddleware
