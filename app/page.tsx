@@ -6,7 +6,7 @@ import { Effect, Schema } from "effect";
 import { ClientComponent } from "./client-component";
 import { ServerComponent } from "./server-component";
 
-export const HomePage = Effect.fn("HomePage")((props: PageProps<"/">) =>
+const HomePage = Effect.fn("HomePage")((props: PageProps<"/">) =>
   Effect.all([
     CurrentUser,
     decodeSearchParams(

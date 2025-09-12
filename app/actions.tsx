@@ -16,7 +16,7 @@ const _getTodosAction = Effect.fn("getTodosAction")(() =>
     )
   )
 );
-export const getTodosAction = async () => BaseAction.build(_getTodosAction)();
+export const getTodosAction = BaseAction.build(_getTodosAction);
 
 const _searchTodosAction = Effect.fn("searchTodosAction")(
   ({ query }: { query?: string }) =>
@@ -31,8 +31,7 @@ const _searchTodosAction = Effect.fn("searchTodosAction")(
       )
     )
 );
-export const searchTodosAction = async ({ query }: { query?: string }) =>
-  BaseAction.build(_searchTodosAction)({ query });
+export const searchTodosAction = BaseAction.build(_searchTodosAction);
 
 const _createTodoAction = Effect.fn("createTodoAction")(
   ({ title }: { title: string }) =>
@@ -47,8 +46,7 @@ const _createTodoAction = Effect.fn("createTodoAction")(
       )
     )
 );
-export const createTodoAction = async ({ title }: { title: string }) =>
-  BaseAction.build(_createTodoAction)({ title });
+export const createTodoAction = BaseAction.build(_createTodoAction);
 
 const _toggleTodoAction = Effect.fn("toggleTodoAction")(
   ({ id }: { id: string }) =>
@@ -63,8 +61,7 @@ const _toggleTodoAction = Effect.fn("toggleTodoAction")(
       )
     )
 );
-export const toggleTodoAction = async ({ id }: { id: string }) =>
-  BaseAction.build(_toggleTodoAction)({ id });
+export const toggleTodoAction = BaseAction.build(_toggleTodoAction);
 
 const _deleteTodoAction = Effect.fn("deleteTodoAction")(
   ({ id }: { id: string }) =>
@@ -79,5 +76,4 @@ const _deleteTodoAction = Effect.fn("deleteTodoAction")(
       )
     )
 );
-export const deleteTodoAction = async ({ id }: { id: string }) =>
-  BaseAction.build(_deleteTodoAction)({ id });
+export const deleteTodoAction = BaseAction.build(_deleteTodoAction);
