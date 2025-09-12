@@ -1,7 +1,7 @@
 import { CurrentUser } from "@/lib/auth-middleware";
 import { BasePage } from "@/lib/base";
 import { TodoStore } from "@/lib/todo-store";
-import { decodeSearchParams } from "@mcrovero/effect-nextjs/Next";
+import { decodeSearchParamsUnknown } from "@/lib/utils/params";
 import { Effect, Schema } from "effect";
 import { ClientComponent } from "./client-component";
 import { ServerComponent } from "./server-component";
@@ -9,9 +9,9 @@ import { ServerComponent } from "./server-component";
 const HomePage = Effect.fn("HomePage")((props: PageProps<"/">) =>
   Effect.all([
     CurrentUser,
-    decodeSearchParams(
+    decodeSearchParamsUnknown(
       Schema.Struct({ search: Schema.optional(Schema.String) })
-    )(props),
+    )(props.searchParams),
   ]).pipe(
     Effect.flatMap(([user, searchParams]) =>
       TodoStore.pipe(
