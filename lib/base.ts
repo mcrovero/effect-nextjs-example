@@ -1,4 +1,3 @@
-import { Tracer as OtelTracer, Resource } from "@effect/opentelemetry";
 import { Next } from "@mcrovero/effect-nextjs";
 import {
   ProvideUserMiddleware,
@@ -13,20 +12,13 @@ import {
 } from "./route-middleware";
 import { layerTracer } from "./tracer";
 
-const tracerWithOtel = layerTracer.pipe(
-  Layer.provide(
-    OtelTracer.layerGlobal.pipe(
-      Layer.provide(Resource.layer({ serviceName: "next-app2" }))
-    )
-  )
-);
 const allLayers = Layer.mergeAll(
   ProvideUserMiddlewareLive,
   TodoStoreLive,
   LogRequestMiddlewareLive
 );
 const allLayersWithTracer = allLayers.pipe(
-  Layer.provideMerge(tracerWithOtel),
+  Layer.provideMerge(layerTracer),
   Layer.provide(Logger.minimumLogLevel(LogLevel.Debug))
 );
 
