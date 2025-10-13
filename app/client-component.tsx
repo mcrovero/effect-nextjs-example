@@ -1,6 +1,6 @@
 "use client";
 
-import type { Todo } from "@/lib/todo-store";
+import type { Todo } from "@/lib/services/todo-store";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import {
@@ -11,8 +11,8 @@ import {
   toggleTodoAction,
 } from "./actions";
 
-export const ClientComponent = ({ initial }: { initial: Todo[] }) => {
-  const [todos, setTodos] = useState<Todo[]>(initial);
+export const ClientComponent = ({ initial }: { initial: readonly Todo[] }) => {
+  const [todos, setTodos] = useState<readonly Todo[]>(initial);
   const [title, setTitle] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isPending, startTransition] = useTransition();

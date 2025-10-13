@@ -21,14 +21,16 @@ export class ProvideUserMiddleware extends NextMiddleware.Tag<ProvideUserMiddlew
 const getUser = Effect.fn("GetUser")(function* () {
   yield* Effect.log("Getting user");
   yield* Effect.sleep(100);
-  return { id: "u-1", name: "Alice" } as const;
+  return { id: "u-1", name: "Alice" };
 });
 
 const cachedGetUser = reactCache(getUser);
 
 export const ProvideUserMiddlewareLive = Layer.succeed(
   ProvideUserMiddleware,
-  ProvideUserMiddleware.of(() => {
-    return cachedGetUser();
-  })
+  ProvideUserMiddleware.of(
+    Effect.fn("ProvideUserMiddleware")(() => {
+      return cachedGetUser();
+    })
+  )
 );

@@ -1,17 +1,19 @@
 import { CurrentUser } from "@/lib/auth-middleware";
 import { BasePage } from "@/lib/base";
-import { TodoStore } from "@/lib/todo-store";
-import { decodeSearchParamsUnknown } from "@/lib/utils/params";
+import { TodoStore } from "@/lib/services/todo-store";
+import { decodeParamsUnknown } from "@mcrovero/effect-nextjs/Params";
 import { Effect, Schema } from "effect";
 import { ClientComponent } from "./client-component";
 import { ServerComponent } from "./server-component";
 
+const ParamsSchema = Schema.Struct({
+  search: Schema.optional(Schema.String),
+});
+
 const HomePage = Effect.fn("HomePage")((props: PageProps<"/">) =>
   Effect.all([
     CurrentUser,
-    decodeSearchParamsUnknown(
-      Schema.Struct({ search: Schema.optional(Schema.String) })
-    )(props.searchParams),
+    decodeParamsUnknown(ParamsSchema)(props.searchParams),
   ]).pipe(
     Effect.flatMap(([user, searchParams]) =>
       TodoStore.pipe(
@@ -56,7 +58,7 @@ const HomePage = Effect.fn("HomePage")((props: PageProps<"/">) =>
         <div className="space-y-4">
           <div className="rounded-xl border p-5 bg-white/70 dark:bg-neutral-900/40">
             <div className="text-sm text-red-600">
-              {String((err as any)?.message ?? "Error fetching todos")}
+              {err?.message ?? "Error fetching todos"}
             </div>
           </div>
         </div>

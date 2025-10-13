@@ -3,19 +3,22 @@ import {
   ProvideUserMiddleware,
   ProvideUserMiddlewareLive,
 } from "./auth-middleware";
-import { TodoStoreLive } from "./todo-store";
 
+import { NodeContext } from "@effect/platform-node";
 import { Layer, Logger, LogLevel } from "effect";
 import {
   LogRequestMiddleware,
   LogRequestMiddlewareLive,
 } from "./route-middleware";
+import { TodoStore } from "./services/todo-store";
+import { StatefulContext } from "./stateful-runtime";
 import { layerTracer } from "./tracer";
 
 const allLayers = Layer.mergeAll(
   ProvideUserMiddlewareLive,
-  TodoStoreLive,
-  LogRequestMiddlewareLive
+  TodoStore.Default.pipe(Layer.provide(NodeContext.layer)),
+  LogRequestMiddlewareLive,
+  Layer.effectContext(StatefulContext)
 );
 const allLayersWithTracer = allLayers.pipe(
   Layer.provideMerge(layerTracer),

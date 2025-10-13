@@ -8,8 +8,7 @@ export class LogRequestMiddleware extends NextMiddleware.Tag<LogRequestMiddlewar
 
 export const LogRequestMiddlewareLive = Layer.succeed(
   LogRequestMiddleware,
-  LogRequestMiddleware.of(({ props, next }) => {
-    console.log(props);
+  LogRequestMiddleware.of(({ next }) => {
     return next;
   })
 );
